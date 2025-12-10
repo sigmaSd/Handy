@@ -238,6 +238,18 @@ jobs:
           fi
           echo "platform=${patched_platform}" >> $GITHUB_OUTPUT
 
+      - name: Disable macOS signing for unsigned builds
+        if: contains(inputs.platform, 'macos') && !inputs.sign-binaries
+        shell: bash
+        run: |
+          # Backup original config
+          cp src-tauri/tauri.conf.json src-tauri/tauri.conf.json.backup
+          # Remove signing-related fields from macOS config
+          jq '.bundle.macOS.signingIdentity = null | .bundle.macOS.entitlements = null | .bundle.macOS.hardenedRuntime = false' src-tauri/tauri.conf.json > src-tauri/tauri.conf.json.tmp
+          mv src-tauri/tauri.conf.json.tmp src-tauri/tauri.conf.json
+          echo "Modified tauri.conf.json to disable signing"
+          jq '.bundle.macOS' src-tauri/tauri.conf.json
+
       - name: Build with Tauri
         uses: tauri-apps/tauri-action@v0
         env:

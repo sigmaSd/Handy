@@ -168,6 +168,8 @@ jobs:
           # Remove signing-related fields and disable updater artifacts
           if [[ "${{ inputs.platform }}" == *"macos"* ]]; then
             jq 'del(.bundle.macOS.signingIdentity, .bundle.macOS.entitlements) | .bundle.macOS.hardenedRuntime = false | .bundle.createUpdaterArtifacts = false | del(.bundle.updater.pubkey)' src-tauri/tauri.conf.json > src-tauri/tauri.conf.json.tmp
+          elif [[ "${{ inputs.platform }}" == *"windows"* ]]; then
+            jq '.bundle.createUpdaterArtifacts = false | del(.bundle.updater.pubkey, .bundle.windows.signCommand)' src-tauri/tauri.conf.json > src-tauri/tauri.conf.json.tmp
           else
             jq '.bundle.createUpdaterArtifacts = false | del(.bundle.updater.pubkey)' src-tauri/tauri.conf.json > src-tauri/tauri.conf.json.tmp
           fi

@@ -37,13 +37,10 @@ jobs:
             args: "--target aarch64-pc-windows-msvc"
             target: "aarch64-pc-windows-msvc"
 
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/build-unsigned.yml
     with:
       platform: ${{ matrix.platform }}
       target: ${{ matrix.target }}
       build-args: ${{ matrix.args }}
-      sign-binaries: false
       asset-prefix: "handy-ci"
-      upload-artifacts: true
-      is-debug-build: false
     secrets: inherit
